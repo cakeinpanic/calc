@@ -1,6 +1,4 @@
 function calc(str) {
-    console.log(str);
-
     if (/([\+\-\*\/]){2}/.test(str)) {
         return null
     }
@@ -9,12 +7,24 @@ function calc(str) {
         str = str.replace(',', '.');
         str = str.replace(/^([\+\-\*\/])/, '');
         str = str.replace(/([\+\-\*\/])$/, '');
-        console.log(str)
 
+        str = extractPower(str);
         return eval(str);
     } catch (e) {
         return null;
     }
+}
+
+function extractPower(str) {
+    const reg = /(\(([^\(^\)]+)\)|\d+)\^(\(([^\(^\)]+)\)|\d+)/;
+    var result = reg.exec(str);
+    if (result) {
+        var base = calc(result[1]);
+        var pow = calc(result[3]);
+        return extractPower(str.replace(reg, Math.pow(base, pow)));
+    }
+    return str;
+
 }
 
 module.exports = calc;

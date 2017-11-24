@@ -29,5 +29,9 @@ test('calc', function (t) {
     test('+2++2', null);
     test('+2+-2+', null);
 
+    test('10^2', 100);
+    test('1 + (2+3)^2', 26);
+    test('1 + (2+3)^(1+1)', 26);
+
     t.end();
 });
