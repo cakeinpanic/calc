@@ -1,12 +1,20 @@
-function calc(str) {
-    if (/([\+\-\*\/]){2}/.test(str)) {
+function prepareString(str) {
+    str = str.replace(/\s/, '');
+    if (/([\+\-\*\/]){2}/.test(str) || /([^\(^\)^\d^\+^\-^\/^\*^\^\.\,\ ])/.test(str)) {
         return null
     }
+    str = str.replace(',', '.');
+    str = str.replace(/^([\*\/])/, '');
+    str = str.replace(/([\+\-\*\/])$/, '');
+    return `(${str})`;
+}
 
+function calc(str) {
+    str = prepareString(str);
+    if (!str) {
+        return null;
+    }
     try {
-        str = str.replace(',', '.');
-        str = str.replace(/^([\+\-\*\/])/, '');
-        str = str.replace(/([\+\-\*\/])$/, '');
 
         str = extractPower(str);
         return eval(str);
