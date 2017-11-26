@@ -1,19 +1,40 @@
 function prepareString(str) {
-    str = str.replace(/\s/, '');
+    str = str.replace(/\s/g, '');
     if (/([\+\-\*\/]){2}/.test(str) || /([^\(^\)^\d^\+^\-^\/^\*^\^\.\,\ ])/.test(str)) {
         return null
     }
     str = str.replace(',', '.');
-    str = str.replace(/^([\*\/])/, '');
+
+    str = str.replace(/\(([\-\+])/g, '(0$1');
+    str = str.replace(/^([\-\+])/g, '(0$1');
+
+    str = str.replace(/^([\*\/])/g, '');
     str = str.replace(/([\+\-\*\/])$/, '');
     return `(${str})`;
 }
 
+function splitString(str) {
+    var rg = new RegExp(/([\d\.]+)|[^\d]/, 'g');
+    var letters = [];
+    var t = rg.exec(str);
+
+    while (t) {
+        letters.push(t[0])
+        t = rg.exec(str);
+    }
+
+    return letters;
+}
+
 function calc(str) {
-    var letters = str.split('');
+    var prepared = prepareString(str);
+
+    if (!prepared) {
+        return null;
+    }
+    var letters = splitString(prepared);
     var texas = [];
     var california = [];
-
     texas.push(letters.shift());
 
     function removeFromStack(callback) {
@@ -51,8 +72,43 @@ function calc(str) {
         return true
     });
 
-    return california;
+    console.log(str, california)
+    var res = runPolish(california);
+    console.log(res)
+    return res;
 
+}
+
+function runPolish(letters) {
+    var stack = [];
+    var i = 0;
+    while (i < letters.length) {
+        var letter = letters.splice(i, 1)[0];
+        var result;
+        if (isNumber(letter)) {
+            stack.push(letter);
+            if (stack.length > 2) {
+                letters.splice(i, 0, stack.shift());
+                i++;
+            }
+        }
+
+        if (isSign(letter)) {
+            if (!stack.length) {
+                stack = letters.splice(0, 2);
+                i = 2;
+            }
+            if (letter === '^') {
+                result = Math.pow(+stack[0], +stack[1]);
+            } else {
+                result = eval(`${stack[0]}${letter}${stack[1]}`);
+            }
+            stack.length = 0;
+            letters.splice(i, 0, result);
+            i = Math.max(i - 1, 0);
+        }
+    }
+    return stack[0];
 }
 
 function checkPriority(o1, o2) {
@@ -65,15 +121,19 @@ function checkPriority(o1, o2) {
 }
 
 function isNumber(s) {
-    return /\d/.test(s);
+    return !isNaN(+s);
 }
 
 function isSign(s) {
-    return !!(/[\-\+\/\*\^]/.test(s));
+    return s === '/'
+        || s === '+'
+        || s === '*'
+        || s === '-'
+        || s === '^';
 }
 
 
-calc('(8+2*5)/(1+3*2-4)');
+// calc('(8+2*5)/(1+3*2-4)');
 calc('3 + 4 * 2 / (1 - 5)^2');
 
 function sillyCalc(str) {

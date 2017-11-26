@@ -15,6 +15,7 @@ test('calc', function (t) {
     test('2+2', 4);
     test('(2+2)', 4);
     test('2+(2)', 4);
+    test('2+(-2)', 0);
 
     test('+2+2', 4);
 
