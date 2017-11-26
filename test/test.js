@@ -1,12 +1,15 @@
 var test = require('tape');
 
-var {calc} = require('../index');
+var {polishCalc, sillyCalc} = require('../index');
 
 test('calc', function (t) {
 
     function test(str, res) {
-        var c = calc(str);
+        console.log(str);
+        var c = sillyCalc(str);
         t.equal(c, res);
+        var d = polishCalc(str);
+        t.equal(d, res);
     }
 
     test('0.1+1', 1.1);
@@ -27,6 +30,7 @@ test('calc', function (t) {
     test('10/2', 5);
     test('10-2', 8);
 
+    test('++2+2', null);
     test('+2++2', null);
     test('+2+-2+', null);
 

@@ -1,4 +1,4 @@
-var {calc, sillyCalc} = require('../index');
+var {polishCalc, sillyCalc} = require('../index');
 
 const Perf = require('performance-node');
 
@@ -19,12 +19,14 @@ function test(string, name, method) {
     console.log(name, myMeasure.duration);
 }
 
+function testBoth(string, name) {
+    test(string, 'silly ' + name, sillyCalc);
+    test(string, 'polish ' + name, polishCalc);
 
-test('2+2', 'simple', calc);
-test('-(2+2*4*(2+8/4))^(-1+3)', 'hard', calc);
-test('-(2+2*4*(2+-8/4)^(-8+6)', 'invalid', calc);
+    console.log('---');
+}
 
-console.log('\n');
-test('2+2', 'sillySimple', sillyCalc);
-test('-(2+2*4*(2+8/4))^(-1+3)', 'sillyHard', sillyCalc);
-test('-(2+2*4*(2+-8/4)^(-8+6)', 'sillyInvalid', sillyCalc);
+testBoth('2+2', 'simple');
+testBoth('0-(2+2*4+4*(2+8/4))^(-1+3)-(2+2*4+4*(2+8/4))^(-1+3)', 'hard');
+testBoth('-(2+2*4*(2+-8/4)^(-8+6)', 'invalid');
+testBoth('(2^((2^(1^4))^(-4+5)^0)^4^12)^1', 'power');
