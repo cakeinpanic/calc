@@ -6,11 +6,12 @@ function prepareString(str) {
     str = str.replace(',', '.');
 
     str = str.replace(/\(([\-\+])/g, '(0$1');
-    str = str.replace(/^([\-\+])/g, '(0$1');
+    str = str.replace(/^([\-\+])/g, '0$1');
 
     str = str.replace(/^([\*\/])/g, '');
     str = str.replace(/([\+\-\*\/])$/, '');
-    return `(${str})`;
+
+    return str;
 }
 
 function splitString(str) {
@@ -72,9 +73,7 @@ function calc(str) {
         return true
     });
 
-    console.log(str, california)
     var res = runPolish(california);
-    console.log(res)
     return res;
 
 }
@@ -134,7 +133,7 @@ function isSign(s) {
 
 
 // calc('(8+2*5)/(1+3*2-4)');
-calc('3 + 4 * 2 / (1 - 5)^2');
+// calc('3 + 4 * 2 / (1 - 5)^2');
 
 function sillyCalc(str) {
     str = prepareString(str);
@@ -162,4 +161,7 @@ function extractPower(str) {
 
 }
 
-module.exports = calc;
+module.exports = {
+    calc: calc,
+    sillyCalc: sillyCalc
+};

@@ -1,6 +1,6 @@
 var test = require('tape');
 
-var calc = require('../index');
+var {calc} = require('../index');
 
 test('calc', function (t) {
 
@@ -29,7 +29,6 @@ test('calc', function (t) {
 
     test('+2++2', null);
     test('+2+-2+', null);
-
 
     test('10^2', 100);
     test('1 + (2+3)^2', 26);
